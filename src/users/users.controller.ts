@@ -1,6 +1,5 @@
 import {
     Body,
-    ClassSerializerInterceptor,
     Controller,
     Delete,
     Get,
@@ -15,7 +14,7 @@ import {
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { UsersService } from "./users.service";
 import { UpdateUserDto } from "./dtos/update-user.dto";
-import { Serialize, SerializeInterceptor } from "../interceptors/serialize.interceptor";
+import { Serialize } from "../interceptors/serialize.interceptor";
 import { UserDto } from "./dtos/user.dto";
 import { AuthService } from "./auth.service";
 import { AuthGuard } from "../guards/auth.guard";
@@ -28,7 +27,7 @@ export class UsersController {
     constructor(
         private readonly usersService: UsersService,
         private readonly authService: AuthService,
-    ) { }
+    ) {}
 
     @Get("whoami")
     @UseGuards(AuthGuard)
@@ -55,26 +54,30 @@ export class UsersController {
         return user;
     }
 
-    @Get("")
+    @Get()
+    @UseGuards(AuthGuard)
     findAllUsers(@Query("email") email: string) {
         return this.usersService.find(email);
     }
 
     @Get(":id")
+    @UseGuards(AuthGuard)
     async findUser(@Param("id") id: string) {
-        const user = await  this.usersService.findOne(parseInt(id));
+        const user = await this.usersService.findOne(parseInt(id));
         if (!user) {
-            throw new NotFoundException('user not found');
+            throw new NotFoundException("user not found");
         }
         return user;
     }
 
-    @Patch("")
+    @Patch(":id")
+    @UseGuards(AuthGuard)
     update(@Param("id") id: string, @Body() body: UpdateUserDto) {
         return this.usersService.update(parseInt(id), body);
     }
 
-    @Delete("")
+    @Delete(":id")
+    @UseGuards(AuthGuard)
     delete(@Param("id") id: string) {
         return this.usersService.remove(parseInt(id));
     }

@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 import { AuthService } from "./auth.service";
 import { UsersService } from "./users.service";
 import { User } from "./user.entity";
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 
 describe("AuthService", () => {
     let service: AuthService;
@@ -11,8 +11,7 @@ describe("AuthService", () => {
     beforeEach(async () => {
         fakeUsersService = {
             find: () => Promise.resolve([]),
-            create: (email: string, password: string) =>
-                Promise.resolve({ id: 1, email, password } as User),
+            create: (email: string, password: string) => Promise.resolve({ id: 1, email, password } as User),
         };
 
         const module = await Test.createTestingModule({
@@ -40,28 +39,17 @@ describe("AuthService", () => {
         expect(hash).toBeDefined();
     });
 
-    it('throws an error if user signs up with email that is in use', async () => {
-        fakeUsersService.find = () =>
-            Promise.resolve([{ id: 1, email: 'a', password: '1' } as User]);
-        await expect(service.signup('asdad@sad.com', 'asdf')).rejects.toThrow(
-            BadRequestException,
-        );
+    it("throws an error if user signs up with email that is in use", async () => {
+        fakeUsersService.find = () => Promise.resolve([{ id: 1, email: "a", password: "1" } as User]);
+        await expect(service.signup("asdad@sad.com", "asdf")).rejects.toThrow(BadRequestException);
     });
 
-    it('throws if signin is called with an unused email', async () => {
-        await expect(
-            service.signin('asdflkj@asdlfkj.com', 'passdflkj'),
-        ).rejects.toThrow(NotFoundException);
+    it("throws if signin is called with an unused email", async () => {
+        await expect(service.signin("asdflkj@asdlfkj.com", "passdflkj")).rejects.toThrow(NotFoundException);
     });
 
-    it('throws if an invalid password is provided', async () => {
-        fakeUsersService.find = () =>
-            Promise.resolve([
-                { email: 'asdf@asdf.com', password: 'laskdjf' } as User,
-            ]);
-        await expect(
-            service.signin('laskdjf@alskdfj.com', 'passowrd'),
-        ).rejects.toThrow(BadRequestException);
+    it("throws if an invalid password is provided", async () => {
+        fakeUsersService.find = () => Promise.resolve([{ email: "asdf@asdf.com", password: "laskdjf" } as User]);
+        await expect(service.signin("laskdjf@alskdfj.com", "passowrd")).rejects.toThrow(BadRequestException);
     });
 });
-
