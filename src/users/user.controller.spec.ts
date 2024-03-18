@@ -10,13 +10,13 @@ describe("UsersController", () => {
     let controller: UsersController;
     let fakeUsersService: Partial<UsersService>;
     let fakeAuthService: Partial<AuthService>;
-
+    const testEmail = "asdf@asdf.com";
     beforeEach(async () => {
         fakeUsersService = {
             findOne: (id: number) => {
                 return Promise.resolve({
                     id,
-                    email: "asdf@asdf.com",
+                    email: testEmail,
                     password: "asdf",
                 } as User);
             },
@@ -52,9 +52,9 @@ describe("UsersController", () => {
     });
 
     it("findAllUsers returns a list of users with the given email", async () => {
-        const users = await controller.findAllUsers("asdf@asdf.com");
+        const users = await controller.findAllUsers(testEmail);
         expect(users.length).toEqual(1);
-        expect(users[0].email).toEqual("asdf@asdf.com");
+        expect(users[0].email).toEqual(testEmail);
     });
 
     it("findUser returns a single user with the given id", async () => {
@@ -69,7 +69,7 @@ describe("UsersController", () => {
 
     it("signin updates session object and returns user", async () => {
         const session = { userId: -10 };
-        const user = await controller.signin({ email: "asdf@asdf.com", password: "asdf" }, session);
+        const user = await controller.signin({ email: testEmail, password: "asdf" }, session);
 
         expect(user.id).toEqual(1);
         expect(session.userId).toEqual(1);
