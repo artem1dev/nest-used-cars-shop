@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  sqlite:
+    image: tiangolo/uwsgi-nginx-flask:python3.8
+    volumes:
+      - ./sqlite:/app/sqlite
+    environment:
+      - SQLALCHEMY_DATABASE_URI=sqlite:///app/sqlite/database.db
+    ports:
+      - "8000:80"
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - "5432:5432"
